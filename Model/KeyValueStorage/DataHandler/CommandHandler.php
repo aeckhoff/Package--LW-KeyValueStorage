@@ -69,6 +69,7 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
             $EntityId = $this->addEntity();
             if ($EntityId > 0) {
                 $ok = $this->saveValues($EntityId, $array);
+                exit();
                 return $EntityId;
             }
             throw new AddEntityErrorException();
@@ -94,14 +95,19 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
         {
             $value = trim($dto->getValueByKey($attribute['key']));
             if (strlen($value)>0) {
+                if(strstr(":opt01number:opt01bool:opt01text:", ':'.$attribute['specific'].':')) {
+                    $sql = "UPDATE ".$this->EntityTable." SET ".$attribute['specific']." = '".$this->db->quote($value)."' WHERE id = ".$EntityId;
+                    $ok = $this->db->dbquery($sql);
+                }
                 if (strstr(":number:bool:text:longtext:", ':'.$attribute['type'].':')) {
                     $ValueColumn = 'value_'.$attribute['type'];
+                    $sql = "INSERT INTO ".$this->ValueTable." (entity_id, keyname, ".$ValueColumn.") VALUES ('".$EntityId."', '".$attribute['key']."', '".$this->db->quote($value)."')";
+                    $ok = $this->db->dbquery($sql);
                 }
                 else {
                     throw new InvalidAttributeTypeException();
                 }
-                $sql = "INSERT INTO ".$this->ValueTable." (entity_id, keyname, ".$ValueColumn.") VALUES ('".$EntityId."', '".$attribute['key']."', '".$this->db->quote($value)."')";
-                $ok = $this->db->dbquery($sql);
+                //echo $sql."<br/>";
             }
         }
     }

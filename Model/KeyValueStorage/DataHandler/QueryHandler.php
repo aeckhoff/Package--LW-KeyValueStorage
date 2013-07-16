@@ -55,9 +55,20 @@ class QueryHandler extends \LWmvc\Model\DataQueryHandler
         return false;
     }
     
+    public function getOptionalColumnByKey($key)
+    {
+        foreach($this->attributes as $attribute)
+        {
+            if ($attribute['key'] == $key) {
+                return $attribute['specific'];
+            }
+        }
+        return false;
+    }
+    
     public function loadEntityValuesById($id)
     {
-        $sql = "SELECT * FROM ".$this->ValueTable." WHERE entity_id = ".$id;
+        $sql = "SELECT v.* FROM ".$this->ValueTable." v, ".$this->EntityTable." e WHERE v.entity_id = ".$id." AND v.entity_id = e.id AND ( e.lw_deleted < 1 OR e.lw_deleted IS NULL) ";
         $result = $this->db->select($sql);
         
         $array['id'] = $id;
@@ -68,9 +79,26 @@ class QueryHandler extends \LWmvc\Model\DataQueryHandler
         return \LWmvc\Model\EntityFactory::buildEntityFromDTO($this->entityclass, $dto, $id);
     }
     
-    public function loadEntitesByEntityClass()
+    public function loadEntitesByEntityClass($filter=false)
     {
-        $sql = "SELECT v.* FROM ".$this->ValueTable." v, ".$this->EntityTable." e WHERE e.entityclass = '".$this->entityclass."' AND v.entity_id = e.id ORDER BY entity_id ASC";
+        if (is_array($filter)) {
+            foreach($filter as $filterentry) {
+                if ($filteradd) {
+                    $connector = $filterentry[0];
+                }
+                $column = $this->getOptionalColumnByKey($filterentry[1]);
+                $operator = $filterentry[2];
+                $value = $filterentry[3];
+                $filteradd.= $connector." e.".$column." ".$operator." '".$value."' ";
+            }
+        }
+
+        $sql = "SELECT v.* FROM ".$this->ValueTable." v, ".$this->EntityTable." e WHERE e.entityclass = '".$this->entityclass."' AND ( e.lw_deleted < 1 OR e.lw_deleted IS NULL) AND v.entity_id = e.id ";
+        if ($filteradd) {
+            $sql.= "AND (".$filteradd.") ";
+        }
+        $sql.= "ORDER BY entity_id ASC";
+            
         $result = $this->db->select($sql);
         foreach($result as $value) {
             if ($array[$value['entity_id']]['id'] < 1) {

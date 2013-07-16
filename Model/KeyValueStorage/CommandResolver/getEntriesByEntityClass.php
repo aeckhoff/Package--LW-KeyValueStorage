@@ -41,7 +41,7 @@ class getEntriesByEntityClass extends \LWmvc\Model\CommandResolver
         $queryHandler = $this->getQueryHandler();
         $queryHandler->setEntityClass($this->command->getParameterByKey('entityclass'));
         $queryHandler->setAttributes($this->command->getParameterByKey('attributes'));
-        $result = $queryHandler->loadEntitesByEntityClass($this->command->getParameterByKey());
+        $result = $queryHandler->loadEntitesByEntityClass($this->command->getParameterByKey('filter'));
         $this->command->getResponse()->setParameterByKey('EntryCollection', $result);
         return  $this->command->getResponse();
     }
