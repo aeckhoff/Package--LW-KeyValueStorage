@@ -12,15 +12,20 @@ The package provides in this first version 5 function, that can be called via th
 - getEntryById
 - getEntriesByEntityClass
 
-All but the deleteEntryById functions need an attribute array, that provides the data structure. 
+
+This is a very short introduction showing just the basics. A more detailed explanation will follow soon.
+
+All but the deleteEntryB4yId functions need an attribute array, that provides the data structure. The specific key stands for filter columns in the entity table. 
 
 Example:
 
     $attributes = array(
         array("key"=>"id", "type"=>"number"),
-        array("key"=>"name", "type"=>"text", "required" => 1, "size" => 255),
+        array("key"=>"name", "type"=>"text", "size" => 255, "specific"=>"opt01text", "required" => 1),
         array("key"=>"email", "type"=>"text", "size" => 255),
-        array("key"=>"date", "type"=>"number", "size" => 14)
+        array("key"=>"date", "type"=>"number", "size" => 14),
+        array("key"=>"flag", "type"=>"number", "size" => 1, "specific"=>"opt01bool"),
+        array("key"=>"amount", "type"=>"number", "size" => 5, "specific"=>"opt01number")
     );
 
 To address a specific data structure, the systems needs an entity class name, that must be provided via a parameter for all functions described. This entity class can be seen as a table name and the attributes as the columns in that table.
@@ -68,5 +73,13 @@ To load all Entries for a specific Entity Class, you can use this code:
 You can retreive the entries collection (see lw_mvc plugin) from the Response Object:
 
     $entryCollection = $Response->getDataByKey("EntryCollection");
+    
+To load filtered Entries for a specific Entity Class, you can use this code:
+
+    $filterArray = array(
+        array("", "amount", ">", "300"),
+        array("AND", "name", "like", "tester%")
+    );
+    $Response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwKeyValueStorage', 'KeyValueStorage', 'getEntriesByEntityClass', array('entityclass'=> 'test_test', "attributes"=>$attributes, "filter" => $filterArray));
     
 
