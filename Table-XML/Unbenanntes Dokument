@@ -1,0 +1,56 @@
+<migration>
+
+    <version>1</version>
+
+    <up>
+        <createTable name="lw_kv_entity">
+            <fields>
+                <field name="id" type="number" size="11" special="auto_increment" />
+                <field name="entityclass" type="text" size="255" />
+                <field name="opt01bool" type="number" size="1" />
+                <field name="opt02bool" type="number" size="1" />
+                <field name="opt03bool" type="number" size="1" />
+                <field name="opt04bool" type="number" size="1" />
+                <field name="opt05bool" type="number" size="1" />
+                <field name="opt01number" type="number" size="11" />
+                <field name="opt02number" type="number" size="11" />
+                <field name="opt03number" type="number" size="11" />
+                <field name="opt04number" type="number" size="11" />
+                <field name="opt05number" type="number" size="11" />
+                <field name="opt06number" type="number" size="11" />
+                <field name="opt07number" type="number" size="11" />
+                <field name="opt08number" type="number" size="11" />
+                <field name="opt09number" type="number" size="11" />
+                <field name="opt10number" type="number" size="11" />
+                <field name="opt01text" type="text" size="255" />
+                <field name="opt02text" type="text" size="255" />
+                <field name="opt03text" type="text" size="255" />
+                <field name="opt04text" type="text" size="255" />
+                <field name="opt05text" type="text" size="255" />
+                <field name="opt06text" type="text" size="255" />
+                <field name="opt07text" type="text" size="255" />
+                <field name="opt08text" type="text" size="255" />
+                <field name="opt09text" type="text" size="255" />
+                <field name="opt10text" type="text" size="255" />
+                <field name="lw_first_date" type="number" size="14" />
+                <field name="lw_last_date" type="number" size="14" />
+                <field name="lw_deleted" type="number" size="14" />
+                <pk>id</pk>
+            </fields>
+        </createTable>
+
+        <createTable name="lw_kv_values">
+            <fields>
+                <field name="entity_id" type="number" size="11" />
+                <field name="keyname" type="text" size="255" />
+                <field name="value_number" type="number" size="14" />
+                <field name="value_bool" type="number" size="1" />
+                <field name="value_text" type="text" size="255" />
+                <field name="value_longtext" type="clob"  />
+                <pk>entity_id,keyname</pk>
+            </fields>
+        </createTable>
+
+    </up>
+
+</migration>
